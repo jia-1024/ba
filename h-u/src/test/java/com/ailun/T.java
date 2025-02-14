@@ -1,15 +1,15 @@
 package com.ailun;
 
 import cn.hutool.crypto.asymmetric.RSA;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
-import com.ailun.common.util.Utils;
+import com.ailun.compent.BinanceWebSocketClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URI;
 
 /**
  * @author JHL
@@ -29,24 +29,39 @@ public class T {
 
 
     public static void main(String[] args) throws Exception {
-        String apiKey = "MRMy54AOkvq8NxdHwA924S5OmHAkT0bF3i6VWMzx9F9FWFuShz4YheDsUqgdJr08";
+        // String apiKey = "MRMy54AOkvq8NxdHwA924S5OmHAkT0bF3i6VWMzx9F9FWFuShz4YheDsUqgdJr08";
+        //
+        // HashMap<String, String> param = new HashMap<>();
+        // param.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        // param.put("recvWindow", "9999999");
+        // param.put("symbol", "BTCUSDT");
+        // param.put("side", "SELL");
+        // param.put("type", "MARKET");
+        // param.put("quantity", "1.23");
+        // String payload = Utils.getPayload(param);
+        // String sign = Utils.getSign(payload, "rsa/private");
+        //
+        //
+        // // TODO 
+        // HttpResponse execute = HttpUtil.createPost("https://fapi.binance.com/fapi/v1/order").header("X-MBX-APIKEY", apiKey).execute();
+        //
+        //
+        // System.out.println(execute);
 
-        HashMap<String, String> param = new HashMap<>();
-        param.put("timestamp", String.valueOf(System.currentTimeMillis()));
-        param.put("recvWindow", "9999999");
-        param.put("symbol", "BTCUSDT");
-        param.put("side", "SELL");
-        param.put("type", "MARKET");
-        param.put("quantity", "1.23");
-        String payload = Utils.getPayload(param);
-        String sign = Utils.getSign(payload, "rsa/private");
+        
+        // HttpResponse execute = HttpUtil.createRequest(Method.GET, "https://fapi.binance.com/fapi/v1/time").setHttpProxy("127.0.0.1", 7890).execute();
+        //
+        //
+        // System.out.println(execute);
 
-
-        // TODO 
-        HttpResponse execute = HttpUtil.createPost("https://fapi.binance.com/fapi/v1/order").header("X-MBX-APIKEY", apiKey).execute();
-
-
-        System.out.println(execute);
+        // https://developers.binance.com/docs/zh-CN/derivatives/usds-margined-futures/websocket-market-streams/Live-Subscribing-Unsubscribing-to-streams
+        String url = "wss://ws-fapi.binance.com/ws-fapi/v1";
+        BinanceWebSocketClient binanceWebSocketClient = new BinanceWebSocketClient(new URI(url));
+        binanceWebSocketClient.setProxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 7890)));
+        binanceWebSocketClient.connect();
+        while (true) {
+            Thread.sleep(1000);
+        }
 
     }
 

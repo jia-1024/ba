@@ -3,6 +3,8 @@ package com.ailun.controller;
 import com.ailun.base.R;
 import com.ailun.common.annotation.JtLog;
 import com.ailun.compent.PrivateFileReaderComponent;
+import com.ailun.constants.Interval;
+import com.ailun.http.ApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +26,15 @@ public class TestController {
 
     @Resource
     PrivateFileReaderComponent privateFileReaderComponent;
+    
+    @Resource
+    ApiClient apiClient;
 
     @GetMapping("/1")
     public R<?> test() {
+
         
-        return R.ok(privateFileReaderComponent.readPrivateFileContent());
+        
+        return R.ok(apiClient.klines("btcusdt",null, Interval.M1.getValue(),null,null).getResult());
     }
 }
